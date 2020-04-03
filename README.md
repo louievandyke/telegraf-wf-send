@@ -1,7 +1,7 @@
 # telegraf-wf-send
 
 ```
-virtualenv venv --python=python3
+python3 -m venv venv
 
 source venv/bin/activate
 

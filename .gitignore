@@ -4,3 +4,4 @@ __pycache__
 metrics*
 *.pyc
 data
+.vscode
