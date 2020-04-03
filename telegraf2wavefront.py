@@ -1,4 +1,5 @@
 import boto3
+import botocore
 from botocore import UNSIGNED
 from botocore.config import Config
 import time
@@ -16,21 +17,17 @@ class Telegraf2Wavefront(object):
     self.filePath = 'metrics.out'
     self.s3Bucket = 'intu-oim-dev-ihp-01-us-west-2'
 
-
   def readFile(self):
     with open(self.filePath, 'r') as fh:
       data = fh.read()
     lines = data.split('\n')
     return lines
 
-
   def run(self):
-
     lines = self.readFile()
     lines = lines[:10]
     data = '\n'.join(lines) + '\n'
     print(data)
-
     s3Client = boto3.client("s3", config=Config(signature_version=UNSIGNED))
     epochRandom = str(int(time.time())) + str(randint(1, 9000))
     s3Response = s3Client.put_object(Body=data, Bucket=self.s3Bucket, Key=epochRandom, ACL="bucket-owner-full-control")
