@@ -16,7 +16,7 @@ class Telegraf2Wavefront(object):
   def __init__(self):
     self.filePath = 'metrics.out'
     self.s3Bucket = 'intu-oim-dev-ihp-01-us-west-2'
-    self.s3Client = boto3.client("s3", aws_access_key_id='', aws_secret_access_key='', config=Config(signature_version=UNSIGNED))
+    self.s3Client = boto3.client("s3", config=Config(signature_version=UNSIGNED))
 
   def readFile(self):
     with open(self.filePath, 'r') as fh:
