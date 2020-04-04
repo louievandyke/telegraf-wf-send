@@ -2,7 +2,7 @@ import boto3
 import botocore
 from botocore import UNSIGNED
 from botocore.config import Config
-import time
+import time, json
 from helpers.log import Log
 from random import randint
 from pprint import pprint
@@ -19,15 +19,17 @@ class Telegraf2Wavefront(object):
     self.s3Client = boto3.client("s3", config=Config(signature_version=UNSIGNED))
 
   def readFile(self):
-    with open(self.filePath, 'r') as fh:
-      data = fh.read()
+    with open(self.filePath, 'rb') as fh:
+      data = fh.read().decode('ascii')
     lines = data.split('\n')
     return lines
 
   def run(self):
     lines = self.readFile()
-    lines = lines[:10]
+    lines = lines[:5]
     data = '\n'.join(lines) + '\n'
+    print('DATA LENGTH: {}'.format(len(data)))
+    print('DATA: {}'.format())
     epochRandom = str(int(time.time())) + str(randint(1, 9000))
     s3Response = self.s3Client.put_object(
       Body=data, 
@@ -45,6 +47,7 @@ if __name__ == '__main__':
   try:
     T = Telegraf2Wavefront()
     T.run()
+    print('SENT!')
     msg = 'PROGRAM COMPLETED'
     print(msg)
     logger.info(msg)

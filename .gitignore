@@ -5,3 +5,4 @@ metrics*
 *.pyc
 data
 .vscode
+rsync.sh
