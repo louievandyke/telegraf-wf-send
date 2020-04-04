@@ -15,13 +15,22 @@ class Telegraf2Wavefront(object):
 
   def __init__(self):
     self.filePath = 'metrics.out'
-    self.s3Bucket = 'intu-oim-dev-ihp-01-us-west-2'
+    self.s3Bucket = 'intu-oim-prd-5-us-west-2-debug'
     self.s3Client = boto3.client("s3", config=Config(signature_version=UNSIGNED))
 
   def readFile(self):
     with open(self.filePath, 'rb') as fh:
       data = fh.read().decode('ascii')
     lines = data.split('\n')
+
+    currentLines = []
+    for line in lines:
+      if line:
+        lineList = line.split(' ')
+        lineList[2] = str(int(time.time()*1000))
+        currentLines.append(' '.join(lineList))
+
+    lines = currentLines
     return lines
 
   def run(self):
@@ -29,12 +38,12 @@ class Telegraf2Wavefront(object):
     lines = lines[:5]
     data = '\n'.join(lines) + '\n'
     print('DATA LENGTH: {}'.format(len(data)))
-    print('DATA: {}'.format())
+    print('DATA: {}'.format(lines))
     epochRandom = str(int(time.time())) + str(randint(1, 9000))
     s3Response = self.s3Client.put_object(
       Body=data, 
       Bucket=self.s3Bucket,
-      Key=epochRandom,
+      Key='oh_my_goodness',
       ACL="bucket-owner-full-control"
     )
     pprint(s3Response)
